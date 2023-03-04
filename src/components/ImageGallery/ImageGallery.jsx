@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import Modal from 'components/Modal/Modal';
 import ImageGalleryItem from './ImageGalleryItem';
 
 import Loader from 'components/Loader/Loader';
@@ -8,15 +9,11 @@ import { getImages } from 'js/fetchImg';
 
 export default class ImageGallery extends Component {
   state = {
-    images: null,
+    images: [],
     loading: false,
     page: 1,
-  };
-
-  clickOnImage = () => console.log('click on image');
-
-  loadMoreImg = () => {
-    this.setState(prev => this.setState({ page: prev.page + 1 }));
+    showModal: false,
+    modalImg: {},
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -24,28 +21,62 @@ export default class ImageGallery extends Component {
       prevProps.request !== this.props.request ||
       prevState.page !== this.state.page
     ) {
-      this.setState({ loading: true });
-
-      setTimeout(() => {
-        getImages(this.props.request, this.state.page)
-          .then(res => this.setState({ images: [...res.data.hits] }))
-          .finally(this.setState({ loading: false }));
-      }, 500);
+      this.getPhotos(this.props.request, this.state.page);
     }
   }
 
+  getPhotos = async (search, searchPage) => {
+    this.setState({ loading: true });
+    try {
+      const {
+        data: { hits },
+      } = await getImages(search, searchPage);
+      this.setState(prevState => ({
+        images: [...prevState.images, ...hits],
+      }));
+    } catch (error) {
+      console.log(error);
+    } finally {
+      this.setState({ loading: false });
+    }
+  };
+
+  clickOnImage = e => {
+    this.setState(prevState => ({ showModal: !prevState.showModal }));
+    this.setState({
+      modalImg: this.state.images.find(
+        img => img.id === Number(e.target.parentNode.id)
+      ),
+    });
+  };
+
+  loadMoreImg = () => {
+    this.setState(prev => this.setState({ page: prev.page + 1 }));
+  };
+
+  closeModal = e => {
+    console.log(e.target);
+    this.setState({ showModal: false });
+  };
+
   render() {
+    const { loading, images, showModal, modalImg } = this.state;
     return (
       <ul className={css.ImageGallery}>
-        {this.state.loading && <Loader />}
-        {this.state.images && (
+        {loading && <Loader />}
+        {images.length > 0 && (
           <>
-            <ImageGalleryItem
-              images={this.state.images}
-              click={this.clickOnImage}
-            />
+            <ImageGalleryItem images={images} click={this.clickOnImage} />
             <LoadMoreBtn showMoreImgs={this.loadMoreImg} />
           </>
+        )}
+
+        {showModal && (
+          <Modal
+            imgUrl={modalImg.largeImageURL}
+            imgAlt={modalImg.tags}
+            closeModal={this.closeModal}
+          />
         )}
       </ul>
     );

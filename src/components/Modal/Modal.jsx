@@ -6,24 +6,22 @@ const modalRoot = document.querySelector('#modal-root');
 
 export default class Modal extends Component {
   state = {
-    hidden: true,
     imgUrl: '',
     imgAlt: '',
   };
 
-  componentDidMount() {
-    console.log('Open Modal');
-  }
+  closeModal = e => {
+    console.log(e.target);
+  };
+  componentDidMount() {}
 
-  componentWillUnmount() {
-    console.log('Close Modal');
-  }
+  componentWillUnmount() {}
 
   render() {
     return createPortal(
-      <div className={css.Overlay}>
+      <div className={css.Overlay} onClick={this.props.closeModal}>
         <div className={css.Modal}>
-          <img src="" alt="" />
+          <img src={this.props.imgUrl} alt={this.props.imgAlt} />
         </div>
       </div>,
       modalRoot
