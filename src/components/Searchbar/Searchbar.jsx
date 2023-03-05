@@ -6,6 +6,7 @@ import {
   SearchButtonLabel,
   SearchFormInput,
 } from './Searchbar.styled';
+
 export default class Searchbar extends Component {
   state = {
     searchRequest: '',
@@ -27,7 +28,7 @@ export default class Searchbar extends Component {
       <SearchHeader>
         <SearchForm onSubmit={this.startSearch}>
           <SearchFormButton type="submit">
-            <SearchButtonLabel>Search</SearchButtonLabel>
+            <SearchButtonLabel></SearchButtonLabel>
           </SearchFormButton>
 
           <SearchFormInput
