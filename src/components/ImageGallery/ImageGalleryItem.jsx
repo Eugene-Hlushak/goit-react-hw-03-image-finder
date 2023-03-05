@@ -1,18 +1,9 @@
-import css from './ImageGallery.module.css';
+import { GalleryItem, GalleryItemImage } from './ImageGallery.styled';
 
 export default function ImageGalleryItem({ images, click }) {
   return images.map(image => (
-    <li
-      className={css.ImageGalleryItem}
-      id={image.id}
-      key={image.id}
-      onClick={click}
-    >
-      <img
-        className={css.ImageGalleryItemImage}
-        src={image.webformatURL}
-        alt={image.tags}
-      />
-    </li>
+    <GalleryItem id={image.id} key={image.id} onClick={click}>
+      <GalleryItemImage src={image.webformatURL} alt={image.tags} />
+    </GalleryItem>
   ));
 }

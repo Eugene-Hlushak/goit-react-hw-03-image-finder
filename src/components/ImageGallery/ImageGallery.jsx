@@ -1,10 +1,9 @@
 import { Component } from 'react';
 import Modal from 'components/Modal/Modal';
 import ImageGalleryItem from './ImageGalleryItem';
-
 import Loader from 'components/Loader/Loader';
 import LoadMoreBtn from 'components/LoadMoreBtn/LoadMoreBtn';
-import css from './ImageGallery.module.css';
+import { GalleryList } from './ImageGallery.styled';
 import { getImages } from 'js/fetchImg';
 
 export default class ImageGallery extends Component {
@@ -17,6 +16,9 @@ export default class ImageGallery extends Component {
   };
 
   componentDidUpdate(prevProps, prevState) {
+    if (prevProps.request !== this.props.request) {
+      this.setState({ images: [], page: 1 });
+    }
     if (
       prevProps.request !== this.props.request ||
       prevState.page !== this.state.page
@@ -42,7 +44,9 @@ export default class ImageGallery extends Component {
   };
 
   clickOnImage = e => {
-    this.setState(prevState => ({ showModal: !prevState.showModal }));
+    this.setState({
+      showModal: true,
+    });
     this.setState({
       modalImg: this.state.images.find(
         img => img.id === Number(e.target.parentNode.id)
@@ -55,30 +59,29 @@ export default class ImageGallery extends Component {
   };
 
   closeModal = e => {
-    console.log(e.target);
     this.setState({ showModal: false });
   };
 
   render() {
     const { loading, images, showModal, modalImg } = this.state;
     return (
-      <ul className={css.ImageGallery}>
-        {loading && <Loader />}
-        {images.length > 0 && (
-          <>
+      <>
+        <GalleryList>
+          {images.length > 0 && (
             <ImageGalleryItem images={images} click={this.clickOnImage} />
-            <LoadMoreBtn showMoreImgs={this.loadMoreImg} />
-          </>
-        )}
+          )}
 
-        {showModal && (
-          <Modal
-            imgUrl={modalImg.largeImageURL}
-            imgAlt={modalImg.tags}
-            closeModal={this.closeModal}
-          />
-        )}
-      </ul>
+          {showModal && (
+            <Modal
+              imgUrl={modalImg.largeImageURL}
+              imgAlt={modalImg.tags}
+              closeModal={this.closeModal}
+            />
+          )}
+        </GalleryList>
+        {loading && <Loader />}
+        {images.length > 0 && <LoadMoreBtn showMoreImgs={this.loadMoreImg} />}
+      </>
     );
   }
 }

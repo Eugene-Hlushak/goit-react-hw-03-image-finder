@@ -4,7 +4,7 @@ const API_KEY = '32716636-8a2ea718c4d85502bc83e063b';
 
 export const getImages = async (search, page) => {
   const data = await axios.get(
-    `https://pixabay.com/api/?key=${API_KEY}&q=${search}&page=${page}`
+    `https://pixabay.com/api/?q=${search}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`
   );
   return data;
 };
