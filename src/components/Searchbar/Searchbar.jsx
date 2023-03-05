@@ -1,5 +1,4 @@
 import { Component } from 'react';
-
 import {
   SearchHeader,
   SearchForm,
