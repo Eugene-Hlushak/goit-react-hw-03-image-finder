@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import { Button } from './LoadMoreBtn.styled';
 
 export default function LoadMoreBtn({ showMoreImgs }) {
@@ -7,3 +8,7 @@ export default function LoadMoreBtn({ showMoreImgs }) {
     </Button>
   );
 }
+
+LoadMoreBtn.propTypes = {
+  showMoreImgs: PropTypes.func.isRequired,
+};
